@@ -3,7 +3,9 @@ const input = document.querySelector('#task-input');
 const tip = document.querySelector('#tip');
 const list = document.querySelector('#task-list');
 
-let tasks = [];
+let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+
+const save = () => localStorage.setItem('tasks', JSON.stringify(tasks));
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   const text = input.value.trim();
@@ -12,6 +14,7 @@ form.addEventListener('submit', (e) => {
     return;
   }
   tasks.push({ text: text, done: false });
+  save();
   tip.textContent = '';
   input.value = '';
   render();
@@ -37,7 +40,8 @@ const render = () => {
     li.textContent = task.text;
     if (task.done) li.classList.add('done');
     li.addEventListener('click', () => {
-      task.done = !task.done;    // 切换状态：改的是数组里的对象
+      task.done = !task.done;
+      save();
       render();
     });
     list.appendChild(li);
@@ -45,8 +49,10 @@ const render = () => {
 };
 filters.addEventListener('click', (e) => {
   if (e.target.tagName !== 'BUTTON') return;
-  currentFilter = e.target.dataset.filter;   // data-filter属性
+  currentFilter = e.target.dataset.filter; 
   render();
 });
+
+
 
 render();
